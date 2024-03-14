@@ -1,12 +1,12 @@
 //Dominik Muc, 345952, Lista 2
+//Kompilator: g++ (GCC) 13.2.1 20230801
 #include <vector>
 #include <iostream>
 #include <math.h>
 
 std::vector<int64_t> rozklad(int64_t n){
     std::vector<int64_t> v;
-    if(n <= 1 && n >= -1) return v;
-    while(n % 2 == 0){
+    while(n % 2 == 0 && n != 0){
         n /= 2;
         v.push_back(2);
     }
@@ -29,8 +29,10 @@ int main(int argc, const char* argv[]){
     for(int i = 1; i < argc; i++){
         try{
             int64_t a = std::stoll(argv[i]);
-            std::cout << a << " = " << (a < 0 ? "-1" : (a == 0 ? "0" : "1"));
-            for(auto &it : rozklad(a)) std::cout << " * " << it;
+            std::cout << a << " = " << (a < 0 ? a == -1 ? "-1" : "-1 * " : (a == 0 ? "0" : a == 1 ? "1" : ""));
+            std::vector<int64_t> v = rozklad(a);
+            if(v.size() > 0) std::cout << v[0];
+            for(int i = 1; i < v.size(); i++) std::cout << " * " << v[i];
             std::cout << '\n';
         }
         catch(std::exception &e){
