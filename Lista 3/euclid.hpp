@@ -1,7 +1,10 @@
+// Dominik Muc, 345952, Lista 3
 #pragma once
 #include <vector>
 #include <stdexcept> 
 #include <iostream>
+
+const double EPSILON = 1e-6;
 
 class Vector{
 private:
@@ -13,10 +16,13 @@ public:
     double GetY() const;
 };
 
+class Point;
+
 class Line{
 public:
     double A, B, C;
     Line(double A, double B, double C) : A(A), B(B), C(C) { if(A == 0 && B == 0) throw std::invalid_argument("Niepoprawna prosta.");}
+    Line(const Point& p1, const Point& p2);
 };
 
 class Point{
@@ -39,8 +45,6 @@ public:
     }
 };
 
-double distance(const Point& p1, const Point& p2);
-
 template <int N>
 class Figure{
 protected:
@@ -50,6 +54,7 @@ protected:
 
 public:
     Figure(std::initializer_list<Point> args);
+    virtual std::vector<Point> GetVertices();
     virtual void Show();
     virtual Point GetCentroid();
     virtual float GetPerimeter();
@@ -62,12 +67,20 @@ public:
 
 #include "euclid.tpp"
 
-class Segment : Figure<2>{
+class Segment : public Figure<2>{
+public:
     Segment(Point a, Point b);
     bool Contains(Point a);
 };
 
-class Triangle : Figure<3>{
+class Triangle : public Figure<3>{
+public:
     Triangle(Point a, Point b, Point c);
     bool Contains(Point a);
 };
+
+
+bool Parallel(Segment a, Segment b);
+bool Perpendicular(Segment a, Segment b);
+bool TriangleContains(Triangle a, Triangle b);
+bool TriangleDisjoint(Triangle a, Triangle b);

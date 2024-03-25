@@ -1,9 +1,31 @@
+// Dominik Muc, 345952, Lista 3
 #include "euclid.hpp"
 
 // Global methods
 
-double distance(const Point& p1, const Point& p2){
+double Distance(const Point& p1, const Point& p2){
     return std::sqrt((p2.GetX() - p1.GetX()) * (p2.GetX() - p1.GetX()) + (p2.GetY() - p1.GetY()) * (p2.GetY() - p1.GetY()));
+}
+
+bool Parallel(Segment a, Segment b){
+    Line l1(a.GetVertices()[0], a.GetVertices()[1]);
+    Line l2(b.GetVertices()[0], b.GetVertices()[1]);
+    return l1.A/l1.B == l2.A/l2.B;
+}
+
+bool Perpendicular(Segment a, Segment b){
+    Line l1(a.GetVertices()[0], a.GetVertices()[1]);
+    Line l2(b.GetVertices()[0], b.GetVertices()[1]);
+    return l1.A * l2.A + l1.B * l2.B == 0;
+}
+
+bool TriangleContains(Triangle a, Triangle b){
+    return a.Contains(b.GetVertices()[0]) && a.Contains(b.GetVertices()[1]) && a.Contains(b.GetVertices()[2]);
+}
+
+bool TriangleDisjoint(Triangle a, Triangle b){
+    return !a.Contains(b.GetVertices()[0]) && !a.Contains(b.GetVertices()[1]) && !a.Contains(b.GetVertices()[2]) &&
+           !b.Contains(a.GetVertices()[0]) && !b.Contains(a.GetVertices()[1]) && !b.Contains(a.GetVertices()[2]);
 }
 
 // Vector
@@ -18,6 +40,15 @@ Vector::Vector(const Vector &ref){
 double Vector::GetX() const { return x; }
 
 double Vector::GetY() const { return y; }
+
+// Line
+
+Line::Line(const Point& p1, const Point& p2){
+    A = p2.GetY() - p1.GetY();
+    B = p1.GetX() - p2.GetX();
+    C = p1.GetX() * p2.GetY() - p2.GetX() * p1.GetY();
+    if(A == 0 && B == 0) throw std::invalid_argument("Niepoprawna prosta.");
+}
 
 // Point
 
@@ -75,12 +106,30 @@ Segment::Segment(Point a, Point b) : Figure<2>({a, b}){
     sort();
 }
 
+bool Segment::Contains(Point a){
+    return Distance(vertices[0], vertices[1]) == (Distance(vertices[0], a) + Distance(vertices[1], a));
+}
+
 // Triangle
 
 Triangle::Triangle(Point a, Point b, Point c) : Figure<3>({a, b, c}){
-    if(a.GetX() * (b.GetY() - c.GetY()) + b.GetX() * (c.GetY() - a.GetY()) + c.GetX() * (a.GetY() - b.GetY()) == 0) throw std::invalid_argument("Niepoprawny trójkąt.");
+    if(std::abs(a.GetX() * (b.GetY() - c.GetY()) + b.GetX() * (c.GetY() - a.GetY()) + c.GetX() * (a.GetY() - b.GetY())) < EPSILON) throw std::invalid_argument("Niepoprawny trójkąt.");
     vertices.push_back(a); 
     vertices.push_back(b);
     vertices.push_back(c);
     sort();
+}
+
+bool Triangle::Contains(Point a){
+    auto area = [](const Point& p1, const Point& p2, const Point& p3) {
+        return std::abs(p1.GetX() * (p2.GetY() - p3.GetY()) + p2.GetX() * (p3.GetY() - p1.GetY()) + p3.GetX() * (p1.GetY() - p2.GetY())) / 2.0;
+    };
+
+    double mainArea = area(vertices[0], vertices[1], vertices[2]);
+
+    double area1 = area(a, vertices[1], vertices[2]);
+    double area2 = area(vertices[0], a, vertices[2]);
+    double area3 = area(vertices[0], vertices[1], a);
+
+    return std::abs(mainArea - (area1 + area2 + area3)) < EPSILON;
 }

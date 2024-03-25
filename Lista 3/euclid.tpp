@@ -1,6 +1,9 @@
+// Dominik Muc, 345952, Lista 3
 #include <algorithm>
 #include <stdexcept> 
 #include <cmath>
+
+double Distance(const Point& p1, const Point& p2);
 
 template <int N>
 void Figure<N>::sort(){
@@ -14,6 +17,11 @@ template <int N>
 Figure<N>::Figure(std::initializer_list<Point> args){
     if(args.size() != N || N < 1) throw std::invalid_argument("Niepoprawna ilość wierzchołków");
     sort();
+}
+
+template <int N>
+std::vector<Point> Figure<N>::GetVertices(){
+    return vertices;
 }
 
 template <int N>
@@ -41,7 +49,7 @@ float Figure<N>::GetPerimeter(){
     double perimeter = 0.0;
     for(int i = 0; i < N; i++){
         int j = (i + 1) % N;
-        perimeter += distance(vertices[i], vertices[j]);
+        perimeter += Distance(vertices[i], vertices[j]);
     }
     return perimeter;
 }
