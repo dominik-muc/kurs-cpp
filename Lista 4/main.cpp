@@ -15,7 +15,7 @@ int main(){
     }
     a.Set(42);
     Number b(a);
-    std::cout << "b: (21, 42)" << std::endl;
+    std::cout << "b: (42)" << std::endl;
     for(int i = 0; i < 5; i++){
         std::cout << b.Get() << std::endl;
         b.Undo();
