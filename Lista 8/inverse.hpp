@@ -5,11 +5,12 @@
 
 class Inverse : public Unary {
 public:
-    Inverse(Expression* expr) : Unary(expr) {}
+    Inverse(Expression *expr) : Unary(expr) {}
     std::string to_string() const override {
         std::string es1 = (this->e1)->to_string();
-        if (typeid(*e1) == typeid(Add) || typeid(*e1) == typeid(Sub)) es1 = "(" + es1 + ")";
+        if (typeid(*e1) == typeid(Add) || typeid(*e1) == typeid(Sub))
+            es1 = "(" + es1 + ")";
         return "1/" + es1;
     }
-    double evaluate() const override { return 1/(e1->evaluate()); }
+    double evaluate() const override { return 1 / (e1->evaluate()); }
 };

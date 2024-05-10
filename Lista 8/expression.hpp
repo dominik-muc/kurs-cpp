@@ -12,9 +12,9 @@ public:
     Expression() = default;
     virtual ~Expression() = default;
 
-    Expression(const Expression&) = delete;
-    Expression& operator=(const Expression&) = delete;
+    Expression(const Expression &) = delete;
+    Expression &operator=(const Expression &) = delete;
 
-    Expression(Expression&&) = delete;
-    Expression& operator=(Expression&&) = delete;
+    Expression(Expression &&) = delete;
+    Expression &operator=(Expression &&) = delete;
 };
