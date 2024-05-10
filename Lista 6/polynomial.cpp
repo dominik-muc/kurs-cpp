@@ -1,18 +1,20 @@
 // Dominik Muc, 345952, Lista 6
 
 #include "polynomial.hpp"
+#include <cmath>
+#define E 0.00001
 
 Polynomial::Polynomial(int degree, double factor){
     if(degree < 0) throw std::invalid_argument("Invalid degree.");
     this->degree = degree;
-    this->factors = new double[degree + 1];
+    this->factors = new double[degree + 1] {0.0};
     this->factors[0] = factor;
 }
 
 Polynomial::Polynomial(int degree, const double factors[]){
     if(degree < 0) throw std::invalid_argument("Invalid degree.");
     this->degree = degree;
-    this->factors = new double[this->degree + 1];
+    this->factors = new double[this->degree + 1] {0.0};
     for(int i = 0; i <= this->degree; i++){
         this->factors[i] = factors[i];
     }
@@ -20,7 +22,7 @@ Polynomial::Polynomial(int degree, const double factors[]){
 
 Polynomial::Polynomial(std::initializer_list<double> factors){
     this->degree = factors.size();
-    this->factors = new double[this->degree + 1];
+    this->factors = new double[this->degree + 1] {0.0};
     int i = 0;
     for (auto factor : factors) {
         this->factors[i++] = factor;
@@ -83,12 +85,13 @@ std::istream& operator>>(std::istream &in, Polynomial &u){
 
 std::ostream& operator<<(std::ostream &out, const Polynomial &u){
     for(int i = u.degree; i >= 2; i--){
-        if(u.factors[i] != 0){
-            if(u.factors[i] != 1) out << u.factors[i] << "x^" << i << " + ";
-            else out << "x^" << i << " + ";
+        if(fabs(u.factors[i]) > E){
+            if(u.factors[i] == -1) out << "-x^" << i << " + ";
+            else if(u.factors[i] == 1) out << "x^" << i << " + ";
+            else out << u.factors[i] << "x^" << i << " + ";
         }
     }
-    if(u.degree > 0) out << u.factors[1] << "x + ";
+    if(u.degree > 0 && fabs(u.factors[1]) > E) out << u.factors[1] << "x + ";
     out << u.factors[0];
     return out;
 }
