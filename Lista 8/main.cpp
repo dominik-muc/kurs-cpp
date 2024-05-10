@@ -1,6 +1,7 @@
 // Dominik Muc, 345952, Lista 8
 
 #include "lib.hpp"
+#include <iomanip>
 
 int main(){
     std::vector<Expression*> expressions;
@@ -69,12 +70,19 @@ int main(){
         )
     );
 
+    expressions.push_back(
+        new Divide(
+            new Number(0),
+            new Number(2)
+        )
+    );
+
     Variable::bind(Variable("x"), 1);
 
     for(auto& it : expressions){
         try{
             std::cout << "\nExpression: " << it->to_string() << std::endl;
-            std::cout << "Value: " << it->evaluate() << std::endl;
+            std::cout << std::setprecision(6) << "Value: " << it->evaluate() << std::endl;
         }
         catch (std::exception& e){
             std::cerr << "Error occured: " << e.what() << std::endl;
@@ -82,6 +90,6 @@ int main(){
     }
 
     std::cout << std::endl;
-
+    
     return 0;
 }
